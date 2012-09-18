@@ -52,10 +52,26 @@ class Coordinate:
         """Output in standard (x,y) format"""
         return "({}, {})".format(self.x, self.y)
 
+    def __nonzero__(self):
+        if self.x != None and self.y != None:
+            return 1
+        return 0
+
+    def __add__(self, other):
+        if not self or not other:
+            raise TypeError("Something ain't right...")
+
+        return Coordinate(self.x + other.x, self.y + other.y)
+
+    def __sub__(self, other):
+        if not self or not other:
+            raise TypeError("He's dead, Jim.")
+
+        return Coordinate(self.x - other.x, self.y - other.y)
 
 class Thing:
     """The things that fill the void"""
-    def __init__(self, name="", location=None, x=None, y=None, ):
+    def __init__(self, name="", location=None, x=None, y=None):
         """
             Create the thing from nothing, give it a name and put give it
             an imaginary place in imaginary space.
