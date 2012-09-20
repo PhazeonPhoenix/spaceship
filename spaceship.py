@@ -60,14 +60,29 @@ class Coordinate:
     def __add__(self, other):
         if not self or not other:
             raise TypeError("Something ain't right...")
-
         return Coordinate(self.x + other.x, self.y + other.y)
 
     def __sub__(self, other):
         if not self or not other:
             raise TypeError("He's dead, Jim.")
-
         return Coordinate(self.x - other.x, self.y - other.y)
+
+    def __eq__(self, other):
+        if not self or not other:
+            raise TypeError("Danger Will Robinson!")
+        return self.x == other.x and self.y == other.y
+
+    def __ne__(self, other):
+        if not self or not other:
+            raise TypeError("I've got a bad feeling about this...")
+        return not self.__eq__(other)
+
+    def __radd__(self, other):
+        return other.__add__(self)
+
+    def __rsub__(self, other):
+        return other.__add__(self)
+
 
 class Thing:
     """The things that fill the void"""
