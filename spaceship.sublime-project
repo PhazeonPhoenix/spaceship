@@ -1,0 +1,21 @@
+{
+	"folders":
+	[
+		{
+			"path": ".",
+            "name": "Spaceship",
+            "file_exclude_patterns":[
+                "._*",
+                "*.bak",
+                "*.sample",
+                "*.tar",
+                "*.tgz",
+                "*.zip"],
+            "folder_exclude_patterns": []
+		}
+	],
+    "settings":
+    {
+        "tab_size": 4
+    }
+}
