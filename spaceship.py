@@ -53,7 +53,7 @@ class Coordinate:
         return "({}, {})".format(self.x, self.y)
 
     def __nonzero__(self):
-        if self.x != None and self.y != None:
+        if self.x is not None and self.y is not None:
             return 1
         return 0
 
@@ -86,11 +86,14 @@ class Coordinate:
 
 class Thing:
     """The things that fill the void"""
-    def __init__(self, name="", location=None, x=None, y=None):
+    def __init__(self, name="", x=None, y=None, location=None):
         """
             Create the thing from nothing, give it a name and put give it
             an imaginary place in imaginary space.
         """
+        if x and not location and isinstance(x, Coordinate):
+            location = x
+            x = None
         if x and y and not location:
             location = Coordinate(x=x, y=y)
         self.location = location
@@ -100,11 +103,5 @@ class Thing:
         """Output what I am, who I am and where I am."""
         return "Thing: \'{}\' at {!s}".format(self.name, self.location)
 
-if __name__ == "__main__":
-    milky_way = Space(name="Milky Way")
-    milky_way.append(Thing(name="ship", x=5, y=10))
-    point = Coordinate(x=2, y=5)
-    milky_way.append(Thing(name="ship2", location=point))
-    milky_way.append(Thing(name="ship3", location=point, x=9, y=3))
-
-    print milky_way
+    def __nonzero__(self):
+        return self.location and isinstance(self.location, Coordinate)
