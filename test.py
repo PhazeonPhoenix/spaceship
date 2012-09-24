@@ -134,6 +134,7 @@ class TestCoordinate(unittest.TestCase):
         coord2 = spaceship.Coordinate(3, 4)
         self.assertFalse(coord1.__ne__(coord2))
 
+
 class TestSpace(unittest.TestCase):
     def test_instance(self):
         space = spaceship.Space()
@@ -157,9 +158,18 @@ class TestSpace(unittest.TestCase):
         space.append(earth)
         self.assertEquals(3, space.__str__().count("\n"))
 
+    def test_dotick(self):
+        space = spaceship.Space("Earth's Orbit")
+        moon = spaceship.Thing("Moon")
+        space.append(moon)
+        space.doTick(1)
+        self.assertEqual(1, space.ticks)
+        self.assertEqual(1, moon.ticks)
+
+
 class TestThing(unittest.TestCase):
     def test_instance(self):
-        ship = spaceship.Thing();
+        ship = spaceship.Thing()
         self.assertTrue(isinstance(ship, spaceship.Thing))
         self.assertFalse(ship.name)
         self.assertFalse(ship.location)
@@ -198,6 +208,45 @@ class TestThing(unittest.TestCase):
 
         planet.location = spaceship.Coordinate(3, 2)
         self.assertTrue(planet.__nonzero__())
+
+    def test_dotick(self):
+        ship = spaceship.Thing("X Wing")
+        ship.doTick(1)
+        self.assertEqual(1, ship.ticks)
+
+
+class TestTime(unittest.TestCase):
+    def test_instance(self):
+        time = spaceship.Time()
+        self.assertTrue(isinstance(time, spaceship.Time))
+        self.assertEqual(0, time.delay)
+        self.assertEqual(0, time.tick)
+
+        time = spaceship.Time(10)
+        self.assertTrue(isinstance(time, spaceship.Time))
+        self.assertEqual(10, time.delay)
+        self.assertEqual(0, time.tick)
+
+    def test_dotick(self):
+        time = spaceship.Time()
+        space = spaceship.Space("Universe")
+        time.append(space)
+        time.doTick()
+        self.assertEqual(1, time.tick)
+        self.assertEqual(1, time[0].ticks)
+
+    def test_run(self):
+        time = spaceship.Time(.01)
+        space = spaceship.Space("Deep Space")
+        ship = spaceship.Thing("USS Voyager")
+        space.append(ship)
+        time.append(space)
+
+        time.run(5)
+        self.assertEqual(5, time.tick)
+        self.assertEqual(5, space.ticks)
+        self.assertEqual(5, ship.ticks)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -4,6 +4,7 @@ The vast universe, in code.
 'Fascinating'  - Spock
 
 """
+import time
 
 
 class Space(list):
@@ -25,6 +26,7 @@ class Space(list):
         """
         super(Space, self).__init__()
         self.name = name
+        self.ticks = 0
 
     def __str__(self):
         """
@@ -40,6 +42,12 @@ class Space(list):
                 output += "{!s}\n".format(thing)
         return output
 
+    def doTick(self, tick=0):
+        """Increment tick count and execute doTick on all children."""
+        self.ticks += 1
+        for child in self:
+            child.doTick(tick)
+
 
 class Coordinate:
     """Represents a coordinate in 2d space"""
@@ -53,34 +61,39 @@ class Coordinate:
         return "({}, {})".format(self.x, self.y)
 
     def __nonzero__(self):
+        """Nonzero if both points are defined."""
         if self.x is not None and self.y is not None:
             return 1
         return 0
 
     def __add__(self, other):
+        """Add two valid coordinates."""
         if not self or not other:
             raise TypeError("Something ain't right...")
         return Coordinate(self.x + other.x, self.y + other.y)
 
     def __sub__(self, other):
+        """Subtract two valid coordinates."""
         if not self or not other:
             raise TypeError("He's dead, Jim.")
         return Coordinate(self.x - other.x, self.y - other.y)
 
     def __eq__(self, other):
+        """Coordinates are equal only when both points are equal."""
         if not self or not other:
             raise TypeError("Danger Will Robinson!")
         return self.x == other.x and self.y == other.y
 
     def __ne__(self, other):
-        if not self or not other:
-            raise TypeError("I've got a bad feeling about this...")
+        """Inverse __eq__"""
         return not self.__eq__(other)
 
     def __radd__(self, other):
+        """Adds two valid coordinates."""
         return other.__add__(self)
 
     def __rsub__(self, other):
+        """Subtracts two valid coordinates."""
         return other.__add__(self)
 
 
@@ -98,6 +111,9 @@ class Thing:
             location = Coordinate(x=x, y=y)
         self.location = location
         self.name = name
+        self.angle = 0
+        self.speed = 0
+        self.ticks = 0
 
     def __str__(self):
         """Output what I am, who I am and where I am."""
@@ -105,3 +121,29 @@ class Thing:
 
     def __nonzero__(self):
         return self.location and isinstance(self.location, Coordinate)
+
+    def doTick(self, tick=0):
+        """Increment tick count."""
+        self.ticks += 1
+
+
+class Time(list):
+    """Represent time as ticks separated by a delay."""
+    def __init__(self, delay=0):
+        """Set delay and tick count."""
+        super(Time, self).__init__()
+        self.delay = delay
+        self.tick = 0
+
+    def doTick(self):
+        """Increment tick and execute doTick on all children."""
+        self.tick += 1
+        for child in self:
+            child.doTick(self.tick)
+
+    def run(self, limit=100):
+        """Elapse time up to limit."""
+        for x in range(1, limit +1):
+            if x != 1 and self.delay > 0:
+                time.sleep(self.delay)
+            self.doTick()
