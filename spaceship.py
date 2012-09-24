@@ -5,6 +5,7 @@ The vast universe, in code.
 
 """
 import time
+import math
 
 
 class Space(list):
@@ -125,6 +126,17 @@ class Thing:
     def doTick(self, tick=0):
         """Increment tick count."""
         self.ticks += 1
+        if self.speed > 0:
+            self.doMove()
+
+    def doMove(self):
+        """Move the thing"""
+        #if not isinstance(self.location, Coordinate):
+        #    self.location = Coordinate(0, 0)
+        scale_x = math.cos(math.radians(self.angle))
+        scale_y = math.sin(math.radians(self.angle))
+        newLocation = Coordinate(int(self.speed * scale_x), int(self.speed * scale_y))
+        self.location += newLocation
 
 
 class Time(list):
@@ -143,7 +155,7 @@ class Time(list):
 
     def run(self, limit=100):
         """Elapse time up to limit."""
-        for x in range(1, limit +1):
+        for x in range(1, limit + 1):
             if x != 1 and self.delay > 0:
                 time.sleep(self.delay)
             self.doTick()

@@ -214,6 +214,29 @@ class TestThing(unittest.TestCase):
         ship.doTick(1)
         self.assertEqual(1, ship.ticks)
 
+    def test_domove(self):
+        ship = spaceship.Thing("UFO", 2, 2)
+        ship.speed = 2
+        ship.angle = 90
+        ship.doMove()
+        desiredLocation = spaceship.Coordinate(2, 4)
+        self.assertEqual(ship.location, desiredLocation)
+
+        ship.angle = 0
+        ship.doMove()
+        desiredLocation = spaceship.Coordinate(4, 4)
+        self.assertEqual(ship.location, desiredLocation)
+
+        ship.angle = 45
+        ship.doMove()
+        desiredLocation = spaceship.Coordinate(5, 5)
+        self.assertEqual(ship.location, desiredLocation)
+
+        ship.angle = 270
+        ship.doMove()
+        desiredLocation = spaceship.Coordinate(5, 3)
+        self.assertEqual(ship.location, desiredLocation)
+
 
 class TestTime(unittest.TestCase):
     def test_instance(self):
@@ -247,6 +270,20 @@ class TestTime(unittest.TestCase):
         self.assertEqual(5, space.ticks)
         self.assertEqual(5, ship.ticks)
 
+class TestFunctionality(unittest.TestCase):
+    def test_flight(self):
+        time = spaceship.Time()
+        universe = spaceship.Space("The Universe")
+        ship = spaceship.Thing("Asteroid", 2, 2)
+        ship.angle = 90
+        ship.speed = 2
+        universe.append(ship)
+        self.assertTrue(isinstance(ship.location, spaceship.Coordinate))
+        time.append(universe)
+
+        time.run(10)
+        desiredLocation = spaceship.Coordinate(2, 22)
+        self.assertEqual(ship.location, desiredLocation)
 
 if __name__ == '__main__':
     unittest.main()
