@@ -2,53 +2,46 @@ import unittest
 import spaceship
 
 
-class TestCoordinate(unittest.TestCase):
-    """Test Coordinate functions"""
+class TestVector(unittest.TestCase):
+    """Test Vector functions"""
     def test_instance(self):
-        coord = spaceship.Coordinate()
-        self.assertIsNone(coord.x)
-        self.assertIsNone(coord.y)
-
-        coord = spaceship.Coordinate(3, 6)
+        coord = spaceship.Vector(3, 6)
         self.assertEqual(3, coord.x)
         self.assertEqual(6, coord.y)
 
-        coord = spaceship.Coordinate(y=3, x=6)
+        coord = spaceship.Vector(y=3, x=6)
         self.assertEqual(6, coord.x)
         self.assertEqual(3, coord.y)
 
-    def test_nonzero(self):
-        coord = spaceship.Coordinate()
-        self.assertFalse(coord.__nonzero__())
-
-        coord = spaceship.Coordinate(0, 0)
-        self.assertTrue(coord.__nonzero__())
-
-        coord = spaceship.Coordinate(1)
-        self.assertFalse(coord.__nonzero__())
-
     def test_str(self):
-        coord = spaceship.Coordinate(3, 4)
-        self.assertEqual("(3, 4)", coord.__str__())
+        coord = spaceship.Vector(3, 4)
+        self.assertEqual("(3.0, 4.0)", coord.__str__())
 
-        coord = spaceship.Coordinate(-3, -4)
-        self.assertEqual("(-3, -4)", coord.__str__())
+        coord = spaceship.Vector(-3, -4)
+        self.assertEqual("(-3.0, -4.0)", coord.__str__())
 
-        coord = spaceship.Coordinate(-3, 4)
-        self.assertEqual("(-3, 4)", coord.__str__())
+        coord = spaceship.Vector(-3, 4)
+        self.assertEqual("(-3.0, 4.0)", coord.__str__())
 
-        coord = spaceship.Coordinate(3, -4)
-        self.assertEqual("(3, -4)", coord.__str__())
+        coord = spaceship.Vector(3, -4)
+        self.assertEqual("(3.0, -4.0)", coord.__str__())
+
+    def test_repr(self):
+        coord = spaceship.Vector(3, 4)
+        self.assertEqual("Vector(3.0, 4.0)", coord.__repr__())
+
+        coord = spaceship.Vector(-3, -4)
+        self.assertEqual("Vector(-3.0, -4.0)", coord.__repr__())
+
+        coord = spaceship.Vector(-3, 4)
+        self.assertEqual("Vector(-3.0, 4.0)", coord.__repr__())
+
+        coord = spaceship.Vector(3, -4)
+        self.assertEqual("Vector(3.0, -4.0)", coord.__repr__())
 
     def test_add(self):
-        coord1 = spaceship.Coordinate(3, 3)
-        coord2 = spaceship.Coordinate(1)
-
-        with self.assertRaises(TypeError):
-            coord3 = coord1.__add__(coord2)
-
-        coord1 = spaceship.Coordinate(3, 3)
-        coord2 = spaceship.Coordinate(1, 1)
+        coord1 = spaceship.Vector(3, 3)
+        coord2 = spaceship.Vector(1, 1)
         coord3 = coord1.__add__(coord2)
 
         self.assertEqual(4, coord3.x)
@@ -56,8 +49,8 @@ class TestCoordinate(unittest.TestCase):
         self.assertIsNot(coord1, coord3)
         self.assertIsNot(coord2, coord3)
 
-        coord1 = spaceship.Coordinate(3, 3)
-        coord2 = spaceship.Coordinate(-1, -1)
+        coord1 = spaceship.Vector(3, 3)
+        coord2 = spaceship.Vector(-1, -1)
         coord3 = coord1.__add__(coord2)
 
         self.assertEqual(2, coord3.x)
@@ -66,14 +59,8 @@ class TestCoordinate(unittest.TestCase):
         self.assertIsNot(coord2, coord3)
 
     def test_sub(self):
-        coord1 = spaceship.Coordinate(3, 3)
-        coord2 = spaceship.Coordinate(1)
-
-        with self.assertRaises(TypeError):
-            coord3 = coord1.__sub__(coord2)
-
-        coord1 = spaceship.Coordinate(3, 3)
-        coord2 = spaceship.Coordinate(1, 1)
+        coord1 = spaceship.Vector(3, 3)
+        coord2 = spaceship.Vector(1, 1)
         coord3 = coord1.__sub__(coord2)
 
         self.assertEqual(2, coord3.x)
@@ -81,8 +68,8 @@ class TestCoordinate(unittest.TestCase):
         self.assertIsNot(coord1, coord3)
         self.assertIsNot(coord2, coord3)
 
-        coord1 = spaceship.Coordinate(3, 3)
-        coord2 = spaceship.Coordinate(-1, -1)
+        coord1 = spaceship.Vector(3, 3)
+        coord2 = spaceship.Vector(-1, -1)
         coord3 = coord1.__sub__(coord2)
 
         self.assertEqual(4, coord3.x)
@@ -90,49 +77,187 @@ class TestCoordinate(unittest.TestCase):
         self.assertIsNot(coord1, coord3)
         self.assertIsNot(coord2, coord3)
 
-    def test_radd(self):
+    def test_mul(self):
+        coord1 = spaceship.Vector(3, 3)
+        coord2 = coord1.__mul__(2)
 
-        coord1 = spaceship.Coordinate(3, 3)
-        coord2 = spaceship.Coordinate(1, 1)
-        coord3 = coord1.__radd__(coord2)
+        self.assertEqual(6, coord2.x)
+        self.assertEqual(6, coord2.y)
+        self.assertIsNot(coord1, coord2)
 
-        self.assertEqual(4, coord3.x)
-        self.assertEqual(4, coord3.y)
-        self.assertIsNot(coord1, coord3)
-        self.assertIsNot(coord2, coord3)
+        coord1 = spaceship.Vector(6, 6)
+        coord2 = coord1.__mul__(-2)
 
-    def test_rsub(self):
+        self.assertEqual(-12, coord2.x)
+        self.assertEqual(-12, coord2.y)
+        self.assertIsNot(coord1, coord2)
 
-        coord1 = spaceship.Coordinate(3, 3)
-        coord2 = spaceship.Coordinate(1, 1)
-        coord3 = coord1.__rsub__(coord2)
+        coord1 = spaceship.Vector(-3, -3)
+        coord2 = coord1.__mul__(2)
 
-        self.assertEqual(4, coord3.x)
-        self.assertEqual(4, coord3.y)
-        self.assertIsNot(coord1, coord3)
-        self.assertIsNot(coord2, coord3)
+        self.assertEqual(-6, coord2.x)
+        self.assertEqual(-6, coord2.y)
+        self.assertIsNot(coord1, coord2)
+
+        coord1 = spaceship.Vector(-6, -6)
+        coord2 = coord1.__mul__(-2)
+
+        self.assertEqual(12, coord2.x)
+        self.assertEqual(12, coord2.y)
+        self.assertIsNot(coord1, coord2)
+
+    def test_div(self):
+        coord1 = spaceship.Vector(6, 6)
+        coord2 = coord1.__div__(2)
+
+        self.assertEqual(3, coord2.x)
+        self.assertEqual(3, coord2.y)
+        self.assertIsNot(coord1, coord2)
+
+        coord1 = spaceship.Vector(-12, -12)
+        coord2 = coord1.__div__(-2)
+
+        self.assertEqual(6, coord2.x)
+        self.assertEqual(6, coord2.y)
+        self.assertIsNot(coord1, coord2)
+
+        coord1 = spaceship.Vector(-6, -6)
+        coord2 = coord1.__div__(2)
+
+        self.assertEqual(-3, coord2.x)
+        self.assertEqual(-3, coord2.y)
+        self.assertIsNot(coord1, coord2)
+
+        coord1 = spaceship.Vector(12, 12)
+        coord2 = coord1.__div__(-2)
+
+        self.assertEqual(-6, coord2.x)
+        self.assertEqual(-6, coord2.y)
+        self.assertIsNot(coord1, coord2)
 
     def test_eq(self):
-        coord1 = spaceship.Coordinate(3, 3)
-        coord2 = spaceship.Coordinate(1)
-
-        with self.assertRaises(Exception):
-            coord1.__eq__(coord2)
-
-        coord1 = spaceship.Coordinate(3, 4)
-        coord2 = spaceship.Coordinate(3, 4)
+        coord1 = spaceship.Vector(3, 4)
+        coord2 = spaceship.Vector(3, 4)
         self.assertTrue(coord1.__eq__(coord2))
 
     def test_ne(self):
-        coord1 = spaceship.Coordinate(3, 3)
-        coord2 = spaceship.Coordinate(1)
-
-        with self.assertRaises(Exception):
-            coord1.__ne__(coord2)
-
-        coord1 = spaceship.Coordinate(3, 4)
-        coord2 = spaceship.Coordinate(3, 4)
+        coord1 = spaceship.Vector(3, 4)
+        coord2 = spaceship.Vector(3, 4)
         self.assertFalse(coord1.__ne__(coord2))
+    
+    def test_iadd(self):
+        coord1 = spaceship.Vector(3, 3)
+        coord2 = spaceship.Vector(1, 1)
+        coord3 = coord1.__iadd__(coord2)
+
+        self.assertEqual(4, coord3.x)
+        self.assertEqual(4, coord3.y)
+        self.assertIs(coord1, coord3)
+        self.assertIsNot(coord2, coord3)
+
+        coord1 = spaceship.Vector(3, 3)
+        coord2 = spaceship.Vector(-1, -1)
+        coord3 = coord1.__iadd__(coord2)
+
+        self.assertEqual(2, coord3.x)
+        self.assertEqual(2, coord3.y)
+        self.assertIs(coord1, coord3)
+        self.assertIsNot(coord2, coord3)
+
+    def test_isub(self):
+        coord1 = spaceship.Vector(3, 3)
+        coord2 = spaceship.Vector(1, 1)
+        coord3 = coord1.__isub__(coord2)
+
+        self.assertEqual(2, coord3.x)
+        self.assertEqual(2, coord3.y)
+        self.assertIs(coord1, coord3)
+        self.assertIsNot(coord2, coord3)
+
+        coord1 = spaceship.Vector(3, 3)
+        coord2 = spaceship.Vector(-1, -1)
+        coord3 = coord1.__isub__(coord2)
+
+        self.assertEqual(4, coord3.x)
+        self.assertEqual(4, coord3.y)
+        self.assertIs(coord1, coord3)
+        self.assertIsNot(coord2, coord3)
+
+    def test_imul(self):
+        coord1 = spaceship.Vector(3, 3)
+        coord2 = coord1.__imul__(2)
+
+        self.assertEqual(6, coord2.x)
+        self.assertEqual(6, coord2.y)
+        self.assertIs(coord1, coord2)
+
+        coord1 = spaceship.Vector(6, 6)
+        coord2 = coord1.__imul__(-2)
+
+        self.assertEqual(-12, coord2.x)
+        self.assertEqual(-12, coord2.y)
+        self.assertIs(coord1, coord2)
+
+        coord1 = spaceship.Vector(-3, -3)
+        coord2 = coord1.__imul__(2)
+
+        self.assertEqual(-6, coord2.x)
+        self.assertEqual(-6, coord2.y)
+        self.assertIs(coord1, coord2)
+
+        coord1 = spaceship.Vector(-6, -6)
+        coord2 = coord1.__imul__(-2)
+
+        self.assertEqual(12, coord2.x)
+        self.assertEqual(12, coord2.y)
+        self.assertIs(coord1, coord2)
+
+    def test_idiv(self):
+        coord1 = spaceship.Vector(6, 6)
+        coord2 = coord1.__idiv__(2)
+
+        self.assertEqual(3, coord2.x)
+        self.assertEqual(3, coord2.y)
+        self.assertIs(coord1, coord2)
+
+        coord1 = spaceship.Vector(-12, -12)
+        coord2 = coord1.__idiv__(-2)
+
+        self.assertEqual(6, coord2.x)
+        self.assertEqual(6, coord2.y)
+        self.assertIs(coord1, coord2)
+
+        coord1 = spaceship.Vector(-6, -6)
+        coord2 = coord1.__idiv__(2)
+
+        self.assertEqual(-3, coord2.x)
+        self.assertEqual(-3, coord2.y)
+        self.assertIs(coord1, coord2)
+
+        coord1 = spaceship.Vector(12, 12)
+        coord2 = coord1.__idiv__(-2)
+
+        self.assertEqual(-6, coord2.x)
+        self.assertEqual(-6, coord2.y)
+        self.assertIs(coord1, coord2)
+
+    def test_abs(self):
+        v = spaceship.Vector(3, 4)
+        self.assertEqual(5, v.__abs__())
+
+        v = spaceship.Vector(-3, 4)
+        self.assertEqual(5, v.__abs__())
+
+        v = spaceship.Vector(3, -4)
+        self.assertEqual(5, v.__abs__())
+
+        v = spaceship.Vector(-3, -4)
+        self.assertEqual(5, v.__abs__())
+
+    def test_unit(self):
+        v = spaceship.Vector(3, 4)
+        expected = spaceship.Vector(.6, .8)
+        self.assertEqual(expected, v.unit())
 
 
 class TestSpace(unittest.TestCase):
@@ -182,9 +307,9 @@ class TestThing(unittest.TestCase):
         ship = spaceship.Thing("Millennium Falcon", 3, 4)
         self.assertTrue(isinstance(ship, spaceship.Thing))
         self.assertEqual("Millennium Falcon", ship.name)
-        self.assertTrue(isinstance(ship.location, spaceship.Coordinate))
+        self.assertTrue(isinstance(ship.location, spaceship.Vector))
 
-        coord = spaceship.Coordinate(5, 2)
+        coord = spaceship.Vector(5, 2)
         ship = spaceship.Thing("Death Star", coord)
         self.assertTrue(isinstance(ship, spaceship.Thing))
         self.assertEqual("Death Star", ship.name)
@@ -197,7 +322,7 @@ class TestThing(unittest.TestCase):
 
     def test_str(self):
         mars = spaceship.Thing("Mars", 1, 1)
-        self.assertEqual("Thing: 'Mars' at (1, 1)", mars.__str__())
+        self.assertEqual("Thing: 'Mars' at (1.0, 1.0)", mars.__str__())
 
     def test_nonzero(self):
         planet = spaceship.Thing("Omicron Persei 8")
@@ -206,7 +331,7 @@ class TestThing(unittest.TestCase):
         planet.location = 33
         self.assertFalse(planet.__nonzero__())
 
-        planet.location = spaceship.Coordinate(3, 2)
+        planet.location = spaceship.Vector(3, 2)
         self.assertTrue(planet.__nonzero__())
 
     def test_dotick(self):
@@ -219,22 +344,22 @@ class TestThing(unittest.TestCase):
         ship.speed = 2
         ship.angle = 90
         ship.doMove()
-        desiredLocation = spaceship.Coordinate(2, 4)
+        desiredLocation = spaceship.Vector(2, 4)
         self.assertEqual(ship.location, desiredLocation)
 
         ship.angle = 0
         ship.doMove()
-        desiredLocation = spaceship.Coordinate(4, 4)
+        desiredLocation = spaceship.Vector(4, 4)
         self.assertEqual(ship.location, desiredLocation)
 
         ship.angle = 45
         ship.doMove()
-        desiredLocation = spaceship.Coordinate(5, 5)
+        desiredLocation = spaceship.Vector(5, 5)
         self.assertEqual(ship.location, desiredLocation)
 
         ship.angle = 270
         ship.doMove()
-        desiredLocation = spaceship.Coordinate(5, 3)
+        desiredLocation = spaceship.Vector(5, 3)
         self.assertEqual(ship.location, desiredLocation)
 
 
@@ -270,6 +395,7 @@ class TestTime(unittest.TestCase):
         self.assertEqual(5, space.ticks)
         self.assertEqual(5, ship.ticks)
 
+
 class TestFunctionality(unittest.TestCase):
     def test_flight(self):
         time = spaceship.Time()
@@ -278,11 +404,11 @@ class TestFunctionality(unittest.TestCase):
         ship.angle = 90
         ship.speed = 2
         universe.append(ship)
-        self.assertTrue(isinstance(ship.location, spaceship.Coordinate))
+        self.assertTrue(isinstance(ship.location, spaceship.Vector))
         time.append(universe)
 
         time.run(10)
-        desiredLocation = spaceship.Coordinate(2, 22)
+        desiredLocation = spaceship.Vector(2, 22)
         self.assertEqual(ship.location, desiredLocation)
 
 if __name__ == '__main__':
